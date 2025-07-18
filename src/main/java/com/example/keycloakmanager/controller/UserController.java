@@ -1,0 +1,62 @@
+package com.example.keycloakmanager.controller;
+
+import com.example.keycloakmanager.controller.request.CreateUserRequest;
+import com.example.keycloakmanager.controller.response.CreateUserResponse;
+import com.example.keycloakmanager.exception.UserCreationException;
+import com.example.keycloakmanager.exception.response.ApiError;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import static com.example.keycloakmanager.config.SystemConstant.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+/**
+ * REST controller for a Keycloak user managing their account.
+ */
+@Tag(name = "User Credential Management", description = "Endpoints for user managing their account")
+@ApiResponse(responseCode = "400", description = "Invalid request payload", content = @Content(
+        mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class)))
+@ApiResponse(responseCode = "401", description = "Unauthorised", content = @Content(
+        mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class)))
+@ApiResponse(responseCode = "404", description = "Entity not found", content = @Content(
+        mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class)))
+@ApiResponse(responseCode = "415", description = "Unsupported Media Type", content = @Content(
+        mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class)))
+@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
+        mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class)))
+@Validated
+@RequestMapping("/" + API_VERSION + API_USER)
+public interface UserController {
+
+    @Operation(summary = "Add a new user to Keycloak", description = "Create a new user with the specified details in Keycloak")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponse(responseCode = "201", description = "User creation successful")
+    @ApiResponse(responseCode = "409", description = "User already exists", content = @Content(
+            mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class)
+    ))
+    CreateUserResponse createUser(
+            @RequestBody @Valid CreateUserRequest userRequest)
+            throws UserCreationException, JsonProcessingException;
+
+    @Operation(summary = "Rollback a request to create a user in Keycloak",
+            description = "Rolls back creating a user with the specified details in Keycloak")
+    @DeleteMapping(API_ROLLBACK + "{primaryEmail}")
+    @ApiResponse(responseCode = "200", description = "Rollback successful")
+    void rollbackUser(
+            @Parameter(name = "primaryEmail", description = "The user name of the user")
+            @NotBlank(message = "The path variable primaryEmail cannot be null")
+            @PathVariable String primaryEmail) throws JsonProcessingException;
+
+
+}
