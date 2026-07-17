@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -81,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
     public void deleteUserRequest(UserRepresentation user) {
         String username = user.getUsername();
         String keycloakId = user.getId();
-        log.info("Deleting the Keycloak account '{}' wth Keycloak id '{}'", username, keycloakId);
+        log.info("Deleting the Keycloak account '{}' with Keycloak id '{}'", username, keycloakId);
         try (Response response = keycloak.realm(realmName).users().delete(keycloakId)) {
             int statusCode = response.getStatus();
             if (statusCode == 204) {
@@ -94,6 +95,18 @@ public class AdminServiceImpl implements AdminService {
         } catch (ProcessingException error) {
             log.error("Error deleting user in Keycloak", error);
             throw new CommunicationException("Error deleting user: " + error.getMessage(), error);
+        }
+    }
+
+    @Override
+    public void updateUserPassword(String keycloakUserId, CredentialRepresentation credential) {
+        log.info("Resetting password for user with Keycloak id '{}'", keycloakUserId);
+        try {
+            keycloak.realm(realmName).users().get(keycloakUserId).resetPassword(credential);
+            log.info("Password successfully reset for user with Keycloak id '{}'", keycloakUserId);
+        } catch (ProcessingException error) {
+            log.error("Error resetting password for user in Keycloak", error);
+            throw new CommunicationException("Error resetting password: " + error.getMessage(), error);
         }
     }
 }

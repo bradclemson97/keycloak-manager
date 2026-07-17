@@ -41,4 +41,13 @@ public interface AdminService {
      * @throws com.example.keycloakmanager.exception.CommunicationException if there was a problem communicating with the Keycloak server.
      */
     void deleteUserRequest(UserRepresentation user);
+
+    /**
+     * Resets the password for a user identified by their Keycloak ID.
+     *
+     * @param keycloakUserId the Keycloak-assigned ID of the user
+     * @param credential the new credential to set
+     * @throws com.example.keycloakmanager.exception.CommunicationException if there was a problem communicating with the Keycloak server.
+     */
+    void updateUserPassword(String keycloakUserId, org.keycloak.representations.idm.CredentialRepresentation credential);
 }

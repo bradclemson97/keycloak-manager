@@ -2,9 +2,10 @@ package com.example.keycloakmanager.controller;
 
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
+import com.example.keycloakmanager.controller.response.GetUserResponse;
+import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 import com.example.keycloakmanager.exception.response.ApiError;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,7 +36,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(
         mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = ApiError.class)))
 @Validated
-@RequestMapping("/" + API_VERSION + API_USER)
+@RequestMapping("/" + API_VERSION + "/" + API_USER)
 public interface UserController {
 
     @Operation(summary = "Add a new user to Keycloak", description = "Create a new user with the specified details in Keycloak")
@@ -47,16 +48,31 @@ public interface UserController {
     ))
     CreateUserResponse createUser(
             @RequestBody @Valid CreateUserRequest userRequest)
-            throws UserCreationException, JsonProcessingException;
+            throws UserCreationException;
+
+    @Operation(summary = "Get a Keycloak user by email", description = "Retrieves a user's details from Keycloak by their email address")
+    @GetMapping("/{email}")
+    @ApiResponse(responseCode = "200", description = "User found")
+    GetUserResponse getUser(
+            @Parameter(name = "email", description = "The email address of the user")
+            @NotBlank(message = "The path variable email cannot be blank")
+            @PathVariable String email);
+
+    @Operation(summary = "Reset a user's password in Keycloak", description = "Generates and sets a new passphrase for the specified user")
+    @PutMapping("/{email}/" + API_PASSWORD)
+    @ApiResponse(responseCode = "200", description = "Password reset successful")
+    ResetPasswordResponse resetPassword(
+            @Parameter(name = "email", description = "The email address of the user")
+            @NotBlank(message = "The path variable email cannot be blank")
+            @PathVariable String email);
 
     @Operation(summary = "Rollback a request to create a user in Keycloak",
             description = "Rolls back creating a user with the specified details in Keycloak")
-    @DeleteMapping(API_ROLLBACK + "{primaryEmail}")
+    @DeleteMapping("/" + API_ROLLBACK + "/{primaryEmail}")
     @ApiResponse(responseCode = "200", description = "Rollback successful")
     void rollbackUser(
-            @Parameter(name = "primaryEmail", description = "The user name of the user")
-            @NotBlank(message = "The path variable primaryEmail cannot be null")
-            @PathVariable String primaryEmail) throws JsonProcessingException;
-
+            @Parameter(name = "primaryEmail", description = "The email of the user to roll back")
+            @NotBlank(message = "The path variable primaryEmail cannot be blank")
+            @PathVariable String primaryEmail);
 
 }

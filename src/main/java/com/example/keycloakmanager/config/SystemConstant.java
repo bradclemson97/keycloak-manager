@@ -11,9 +11,10 @@ public class SystemConstant {
     }
 
     // Endpoints
-    public static final int API_VERSION = 1;
+    public static final String API_VERSION = "v1";
     public static final String API_USER = "user";
     public static final String API_ROLLBACK = "rollback";
+    public static final String API_PASSWORD = "password";
 
     // Password Formats
     public static final String PASS_WORD_FORMAT = "(?:^|-)([^-]+)";
