@@ -3,8 +3,9 @@ package com.example.keycloakmanager.service;
 import com.example.keycloakmanager.config.SystemConstant;
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
+import com.example.keycloakmanager.controller.response.GetUserResponse;
+import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * A service for performing Saga actions.
+ * A service for performing user management actions against Keycloak.
  */
 @Service
 @RequiredArgsConstructor
@@ -24,9 +25,7 @@ public class UsersServiceImpl implements UsersService {
     private final CredentialService credentialService;
 
     @Override
-    public CreateUserResponse createUser(CreateUserRequest request)
-        throws UserCreationException, JsonProcessingException {
-
+    public CreateUserResponse createUser(CreateUserRequest request) throws UserCreationException {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(request.getEmail());
         user.setFirstName(request.getFirstName());
@@ -40,15 +39,39 @@ public class UsersServiceImpl implements UsersService {
 
         CredentialRepresentation credential = credentialService.createPasswordCredential(password);
         user.setCredentials(List.of(credential));
-
-        List<String> groups = List.of(SystemConstant.SYSTEM_USERS_GROUP);
-        user.setGroups(groups);
+        user.setGroups(List.of(SystemConstant.SYSTEM_USERS_GROUP));
 
         adminService.createUserRequest(user);
 
         return CreateUserResponse.builder()
                 .systemUserId(request.getSystemUserId())
                 .password(password)
+                .build();
+    }
+
+    @Override
+    public GetUserResponse getUser(String email) {
+        UserRepresentation user = adminService.getUser(email);
+        return GetUserResponse.builder()
+                .keycloakId(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .emailVerified(Boolean.TRUE.equals(user.isEmailVerified()))
+                .enabled(Boolean.TRUE.equals(user.isEnabled()))
+                .build();
+    }
+
+    @Override
+    public ResetPasswordResponse resetPassword(String email) {
+        UserRepresentation user = adminService.getUser(email);
+        String newPassword = credentialService.generateUserPassword();
+        log.info("New password for {} generated with a length {}", email, newPassword.length());
+        CredentialRepresentation credential = credentialService.createPasswordCredential(newPassword);
+        adminService.updateUserPassword(user.getId(), credential);
+        return ResetPasswordResponse.builder()
+                .password(newPassword)
                 .build();
     }
 

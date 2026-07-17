@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: "keycloak-manager"
+
+server:
+  port: 8210
+
+logging:
+  level:
+    org.springframework: INFO
+    com.example.usermanagementservice: DEBUG
+
+# Keycloak configuration
+keycloak:
+  # The URL of your Keycloak server's authentication endpoint
+  server-url: ${KEYCLOAK_AUTH_URL:http://localhost:9000}
+  # The name of the Keycloak realm containing your application and users
+  realm: ${KEYCLOAK_REALM:system}
+  # The ID of the client that represents your application in Keycloak
+  clientId: ${KEYCLOAK_MANAGER_CLIENT:system-manager-service}
+  # The client secret that allows your application to authenticate with Keycloak
+  clientSecret: ${KEYCLOAK_MANAGER_SECRET:pdjofnwondhwinskwe}
+
+clients:
+  clients:
+    user-manager:
+      base-url: ${USER_MANAGER_URL:http://localhost:8080}
