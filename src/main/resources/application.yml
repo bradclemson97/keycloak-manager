@@ -1,6 +1,11 @@
 spring:
   application:
     name: "keycloak-manager"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:9000/realms/system}
 
 server:
   port: 8210

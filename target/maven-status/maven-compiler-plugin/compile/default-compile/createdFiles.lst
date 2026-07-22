@@ -21,6 +21,7 @@ com/example/keycloakmanager/exception/DuplicateUserException.class
 com/example/keycloakmanager/controller/UserControllerImpl.class
 com/example/keycloakmanager/controller/response/CreateUserResponse.class
 com/example/keycloakmanager/controller/response/GetUserResponse.class
+com/example/keycloakmanager/config/SecurityConfig.class
 com/example/keycloakmanager/service/CredentialServiceImpl.class
 com/example/keycloakmanager/controller/response/CreateUserResponse$CreateUserResponseBuilder.class
 com/example/keycloakmanager/config/SystemConstant.class

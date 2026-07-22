@@ -22,7 +22,7 @@ public class PasswordConfig {
     private final ObjectMapper objectMapper;
 
     @Value("classpath:data/english-words.json")
-    private final Resource englishWordsResource;
+    private Resource englishWordsResource;
 
     /**
      * Provides an {@link Words} instance generating a random english word.

@@ -14,19 +14,46 @@ The service is configured via `application.yml`. All values can be overridden wi
 
 | Environment Variable         | Default                      | Description                                      |
 |------------------------------|------------------------------|--------------------------------------------------|
-| `KEYCLOAK_AUTH_URL`          | `http://localhost:9000`      | Keycloak server URL                              |
-| `KEYCLOAK_REALM`             | `system`                     | Keycloak realm name                              |
-| `KEYCLOAK_MANAGER_CLIENT`    | `system-manager-service`     | Client ID used to authenticate with Keycloak     |
-| `KEYCLOAK_MANAGER_SECRET`    | `pdjofnwondhwinskwe`         | Client secret for the above client               |
-| `USER_MANAGER_URL`           | `http://localhost:8080`      | Base URL of the downstream User Manager service  |
+| `KEYCLOAK_AUTH_URL`          | `http://localhost:9000`               | Keycloak server URL (used by admin client)       |
+| `KEYCLOAK_ISSUER_URI`        | `http://localhost:9000/realms/system` | JWT issuer URI for incoming Bearer token validation |
+| `KEYCLOAK_REALM`             | `system`                              | Keycloak realm name                              |
+| `KEYCLOAK_MANAGER_CLIENT`    | `system-manager-service`              | Client ID used to authenticate with Keycloak Admin API |
+| `KEYCLOAK_MANAGER_SECRET`    | `pdjofnwondhwinskwe`                  | Client secret for the above client               |
+| `USER_MANAGER_URL`           | `http://localhost:8080`               | Base URL of the downstream User Manager service  |
 
 The service runs on port **8210**.
 
+## Security
+
+All endpoints except `/actuator/health`, `/v3/api-docs/**`, and `/swagger-ui/**` require a valid Bearer JWT issued by the configured Keycloak realm (`KEYCLOAK_ISSUER_URI`).
+
+The service does not use the `security-library`. It has its own `SecurityFilterChain` with `oauth2ResourceServer(jwt)` configured directly, so the incoming user JWT is validated by Spring Security before any Keycloak admin operations are performed.
+
+The service itself authenticates to the Keycloak Admin REST API separately using the OAuth2 client credentials grant (`KEYCLOAK_MANAGER_CLIENT` / `KEYCLOAK_MANAGER_SECRET`). These are two independent auth flows.
+
+## Keycloak Prerequisites
+
+Before this service can accept requests or create users, the Keycloak realm must be configured:
+
+1. **`system-manager-service` client** — confidential, service accounts only (no standard or direct-access flows), with the service account granted the `realm-management / manage-users` role. The client secret must match `KEYCLOAK_MANAGER_SECRET`.
+2. **`system-users` group** — all users created via `POST /v1/user` are automatically assigned to this group. The group must exist or user creation will fail with a Keycloak 500 error.
+
+Full setup instructions including `kcadm.sh` one-liners are in the User Management Service README, sections 9.5 and 9.6.
+
 ## Running the Service
 
-```bash
-mvn spring-boot:run
-```
+* **Build the project**:
+    ```bash
+    ./mvnw clean package
+    ```
+* **Run locally**:
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+* **Stop running**:
+    ```bash
+    lsof -ti :8210 | xargs kill -9
+    ```
 
 Or with environment overrides:
 
