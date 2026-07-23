@@ -13,6 +13,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A service for performing user management actions against Keycloak.
@@ -40,6 +41,7 @@ public class UsersServiceImpl implements UsersService {
         CredentialRepresentation credential = credentialService.createPasswordCredential(password);
         user.setCredentials(List.of(credential));
         user.setGroups(List.of(SystemConstant.SYSTEM_USERS_GROUP));
+        user.setAttributes(Map.of("systemUserId", List.of(request.getSystemUserId().toString())));
 
         adminService.createUserRequest(user);
 
