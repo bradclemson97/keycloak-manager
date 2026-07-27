@@ -14,6 +14,7 @@
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/request/CreateUserRequest.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/response/CreateUserResponse.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/response/GetUserResponse.java
+/Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/response/LockoutStatusResponse.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/response/ResetPasswordResponse.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/exception/CommunicationException.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/exception/DuplicateUserException.java

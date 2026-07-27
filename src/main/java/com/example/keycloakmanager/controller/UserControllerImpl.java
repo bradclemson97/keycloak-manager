@@ -3,6 +3,7 @@ package com.example.keycloakmanager.controller;
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
 import com.example.keycloakmanager.controller.response.GetUserResponse;
+import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
 import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 import com.example.keycloakmanager.service.UsersService;
@@ -48,5 +49,21 @@ public class UserControllerImpl implements UserController {
         log.info("Handling create user rollback request for user '{}'", primaryEmail);
         usersService.rollbackUser(primaryEmail);
         log.info("Handled create user rollback request for user '{}'", primaryEmail);
+    }
+
+    @Override
+    public LockoutStatusResponse getLockoutStatus(String email) {
+        log.info("Handling lockout status request for '{}'", email);
+        LockoutStatusResponse response = usersService.getLockoutStatus(email);
+        log.info("Handled lockout status request for '{}': lockedByKeycloak={}, failedAttempts={}",
+                email, response.isLockedByKeycloak(), response.getFailedAttempts());
+        return response;
+    }
+
+    @Override
+    public void unlockInKeycloak(String email) {
+        log.info("Handling unlock request for '{}'", email);
+        usersService.unlockInKeycloak(email);
+        log.info("Handled unlock request for '{}'", email);
     }
 }

@@ -7,6 +7,7 @@ import com.example.keycloakmanager.exception.UserDeletionException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.Response;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
@@ -108,5 +109,24 @@ public class AdminServiceImpl implements AdminService {
             log.error("Error resetting password for user in Keycloak", error);
             throw new CommunicationException("Error resetting password: " + error.getMessage(), error);
         }
+    }
+
+    @Override
+    public Map<String, Object> getBruteForceStatus(String keycloakId) {
+        return keycloak.realm(realmName).attackDetection().bruteForceUserStatus(keycloakId);
+    }
+
+    @Override
+    public void clearBruteForce(String keycloakId) {
+        keycloak.realm(realmName).attackDetection().clearBruteForceForUser(keycloakId);
+        log.info("Cleared brute-force state for Keycloak user {}", keycloakId);
+    }
+
+    @Override
+    public void setUserEnabled(String keycloakId, boolean enabled) {
+        UserRepresentation user = keycloak.realm(realmName).users().get(keycloakId).toRepresentation();
+        user.setEnabled(enabled);
+        keycloak.realm(realmName).users().get(keycloakId).update(user);
+        log.info("Set enabled={} for Keycloak user {}", enabled, keycloakId);
     }
 }

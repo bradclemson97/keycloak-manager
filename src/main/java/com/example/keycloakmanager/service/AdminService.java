@@ -3,6 +3,8 @@ package com.example.keycloakmanager.service;
 import com.example.keycloakmanager.exception.UserCreationException;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import java.util.Map;
+
 public interface AdminService {
 
     /**
@@ -50,4 +52,10 @@ public interface AdminService {
      * @throws com.example.keycloakmanager.exception.CommunicationException if there was a problem communicating with the Keycloak server.
      */
     void updateUserPassword(String keycloakUserId, org.keycloak.representations.idm.CredentialRepresentation credential);
+
+    Map<String, Object> getBruteForceStatus(String keycloakId);
+
+    void clearBruteForce(String keycloakId);
+
+    void setUserEnabled(String keycloakId, boolean enabled);
 }

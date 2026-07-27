@@ -4,6 +4,7 @@ import com.example.keycloakmanager.config.SystemConstant;
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
 import com.example.keycloakmanager.controller.response.GetUserResponse;
+import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
 import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A service for performing user management actions against Keycloak.
@@ -40,6 +42,7 @@ public class UsersServiceImpl implements UsersService {
         CredentialRepresentation credential = credentialService.createPasswordCredential(password);
         user.setCredentials(List.of(credential));
         user.setGroups(List.of(SystemConstant.SYSTEM_USERS_GROUP));
+        user.setAttributes(Map.of("systemUserId", List.of(request.getSystemUserId().toString())));
 
         adminService.createUserRequest(user);
 
@@ -79,5 +82,25 @@ public class UsersServiceImpl implements UsersService {
     public void rollbackUser(String username) {
         UserRepresentation user = adminService.getUser(username);
         adminService.deleteUserRequest(user);
+    }
+
+    @Override
+    public LockoutStatusResponse getLockoutStatus(String email) {
+        UserRepresentation user = adminService.getUser(email);
+        Map<String, Object> status = adminService.getBruteForceStatus(user.getId());
+        boolean disabled = Boolean.TRUE.equals(status.get("disabled"));
+        int numFailures = status.get("numFailures") instanceof Number n ? n.intValue() : 0;
+        return LockoutStatusResponse.builder()
+                .lockedByKeycloak(disabled)
+                .failedAttempts(numFailures)
+                .build();
+    }
+
+    @Override
+    public void unlockInKeycloak(String email) {
+        UserRepresentation user = adminService.getUser(email);
+        adminService.clearBruteForce(user.getId());
+        adminService.setUserEnabled(user.getId(), true);
+        log.info("Unlocked Keycloak account for '{}'", email);
     }
 }

@@ -3,6 +3,7 @@ package com.example.keycloakmanager.controller;
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
 import com.example.keycloakmanager.controller.response.GetUserResponse;
+import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
 import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 import com.example.keycloakmanager.exception.response.ApiError;
@@ -74,5 +75,22 @@ public interface UserController {
             @Parameter(name = "primaryEmail", description = "The email of the user to roll back")
             @NotBlank(message = "The path variable primaryEmail cannot be blank")
             @PathVariable String primaryEmail);
+
+    @Operation(summary = "Get lockout status for a user", description = "Returns whether the user is locked in Keycloak and how many failed attempts have occurred")
+    @GetMapping("/{email}/" + API_LOCKOUT_STATUS)
+    @ApiResponse(responseCode = "200", description = "Lockout status retrieved")
+    LockoutStatusResponse getLockoutStatus(
+            @Parameter(name = "email", description = "The email address of the user")
+            @NotBlank(message = "The path variable email cannot be blank")
+            @PathVariable String email);
+
+    @Operation(summary = "Unlock a user in Keycloak", description = "Clears brute-force state and re-enables the user account in Keycloak")
+    @PutMapping("/{email}/" + API_UNLOCK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponse(responseCode = "204", description = "User unlocked successfully")
+    void unlockInKeycloak(
+            @Parameter(name = "email", description = "The email address of the user")
+            @NotBlank(message = "The path variable email cannot be blank")
+            @PathVariable String email);
 
 }
