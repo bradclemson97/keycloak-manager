@@ -4,6 +4,7 @@ import com.example.keycloakmanager.config.SystemConstant;
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
 import com.example.keycloakmanager.controller.response.GetUserResponse;
+import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
 import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 import lombok.RequiredArgsConstructor;
@@ -81,5 +82,25 @@ public class UsersServiceImpl implements UsersService {
     public void rollbackUser(String username) {
         UserRepresentation user = adminService.getUser(username);
         adminService.deleteUserRequest(user);
+    }
+
+    @Override
+    public LockoutStatusResponse getLockoutStatus(String email) {
+        UserRepresentation user = adminService.getUser(email);
+        Map<String, Object> status = adminService.getBruteForceStatus(user.getId());
+        boolean disabled = Boolean.TRUE.equals(status.get("disabled"));
+        int numFailures = status.get("numFailures") instanceof Number n ? n.intValue() : 0;
+        return LockoutStatusResponse.builder()
+                .lockedByKeycloak(disabled)
+                .failedAttempts(numFailures)
+                .build();
+    }
+
+    @Override
+    public void unlockInKeycloak(String email) {
+        UserRepresentation user = adminService.getUser(email);
+        adminService.clearBruteForce(user.getId());
+        adminService.setUserEnabled(user.getId(), true);
+        log.info("Unlocked Keycloak account for '{}'", email);
     }
 }

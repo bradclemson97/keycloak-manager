@@ -3,6 +3,7 @@ package com.example.keycloakmanager.service;
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
 import com.example.keycloakmanager.controller.response.GetUserResponse;
+import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
 import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 
@@ -44,4 +45,8 @@ public interface UsersService {
      * @param username the keycloak username of the user.
      */
     void rollbackUser(String username);
+
+    LockoutStatusResponse getLockoutStatus(String email);
+
+    void unlockInKeycloak(String email);
 }

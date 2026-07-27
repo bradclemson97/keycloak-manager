@@ -32,4 +32,8 @@ public class SystemConstant {
 
     // User Groups
     public static final String SYSTEM_USERS_GROUP = "system-users";
+
+    // Lockout endpoints
+    public static final String API_LOCKOUT_STATUS = "lockout-status";
+    public static final String API_UNLOCK = "unlock";
 }
