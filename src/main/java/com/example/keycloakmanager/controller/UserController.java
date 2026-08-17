@@ -1,6 +1,7 @@
 package com.example.keycloakmanager.controller;
 
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
+import com.example.keycloakmanager.controller.request.SyncPermissionsRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
 import com.example.keycloakmanager.controller.response.GetUserResponse;
 import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -92,5 +94,14 @@ public interface UserController {
             @Parameter(name = "email", description = "The email address of the user")
             @NotBlank(message = "The path variable email cannot be blank")
             @PathVariable String email);
+
+    @Operation(summary = "Sync user permissions to Keycloak", description = "Updates capabilities and systemRoles Keycloak user attributes for JWT embedding")
+    @PutMapping("/{systemUserId}/permissions")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponse(responseCode = "204", description = "Permissions synced successfully")
+    void syncUserPermissions(
+            @Parameter(name = "systemUserId", description = "The system user ID")
+            @PathVariable UUID systemUserId,
+            @RequestBody SyncPermissionsRequest request);
 
 }

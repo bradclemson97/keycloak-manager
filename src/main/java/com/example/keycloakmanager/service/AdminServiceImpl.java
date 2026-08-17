@@ -7,7 +7,10 @@ import com.example.keycloakmanager.exception.UserDeletionException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.ProcessingException;
 import jakarta.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
@@ -128,5 +131,26 @@ public class AdminServiceImpl implements AdminService {
         user.setEnabled(enabled);
         keycloak.realm(realmName).users().get(keycloakId).update(user);
         log.info("Set enabled={} for Keycloak user {}", enabled, keycloakId);
+    }
+
+    @Override
+    public void syncUserPermissions(UUID systemUserId, List<String> capabilities, List<String> systemRoles) {
+        log.info("Syncing permissions to Keycloak for systemUserId {}", systemUserId);
+        var users = keycloak.realm(realmName).users()
+                .searchByAttributes("systemUserId:" + systemUserId);
+        if (users == null || users.isEmpty()) {
+            log.warn("No Keycloak user found for systemUserId {}", systemUserId);
+            return;
+        }
+        var userResource = keycloak.realm(realmName).users().get(users.get(0).getId());
+        UserRepresentation rep = userResource.toRepresentation();
+        Map<String, List<String>> attrs = new HashMap<>(
+                rep.getAttributes() != null ? rep.getAttributes() : Map.of());
+        attrs.put("capabilities", capabilities);
+        attrs.put("systemRoles", systemRoles);
+        rep.setAttributes(attrs);
+        userResource.update(rep);
+        log.info("Synced {} capabilities and {} systemRoles for systemUserId {}",
+                capabilities.size(), systemRoles.size(), systemUserId);
     }
 }
