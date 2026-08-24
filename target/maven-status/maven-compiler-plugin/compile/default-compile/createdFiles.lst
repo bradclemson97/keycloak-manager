@@ -3,6 +3,7 @@ com/example/keycloakmanager/exception/UserDeletionException.class
 com/example/keycloakmanager/controller/request/CreateUserRequest$CreateUserRequestBuilder.class
 com/example/keycloakmanager/client/UserManagerClient.class
 com/example/keycloakmanager/KeycloakManagerApplication.class
+com/example/keycloakmanager/service/RealmSetupService.class
 com/example/keycloakmanager/controller/response/ResetPasswordResponse.class
 com/example/keycloakmanager/service/UsersServiceImpl.class
 com/example/keycloakmanager/client/response/UserDetailsResponse.class
@@ -30,6 +31,7 @@ com/example/keycloakmanager/controller/request/CreateUserRequest.class
 com/example/keycloakmanager/exception/UserCreationException.class
 com/example/keycloakmanager/controller/response/LockoutStatusResponse.class
 com/example/keycloakmanager/service/UsersService.class
+com/example/keycloakmanager/controller/request/SyncPermissionsRequest.class
 com/example/keycloakmanager/config/KeycloakConfig.class
 com/example/keycloakmanager/config/PasswordConfig$1.class
 com/example/keycloakmanager/exception/response/ApiError$ApiErrorBuilder.class
