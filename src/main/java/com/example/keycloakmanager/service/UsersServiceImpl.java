@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * A service for performing user management actions against Keycloak.
@@ -102,5 +103,10 @@ public class UsersServiceImpl implements UsersService {
         adminService.clearBruteForce(user.getId());
         adminService.setUserEnabled(user.getId(), true);
         log.info("Unlocked Keycloak account for '{}'", email);
+    }
+
+    @Override
+    public void syncUserPermissions(UUID systemUserId, List<String> capabilities, List<String> systemRoles) {
+        adminService.syncUserPermissions(systemUserId, capabilities, systemRoles);
     }
 }

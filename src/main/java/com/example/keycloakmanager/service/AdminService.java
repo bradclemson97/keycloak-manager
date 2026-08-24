@@ -3,7 +3,9 @@ package com.example.keycloakmanager.service;
 import com.example.keycloakmanager.exception.UserCreationException;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public interface AdminService {
 
@@ -58,4 +60,6 @@ public interface AdminService {
     void clearBruteForce(String keycloakId);
 
     void setUserEnabled(String keycloakId, boolean enabled);
+
+    void syncUserPermissions(UUID systemUserId, List<String> capabilities, List<String> systemRoles);
 }

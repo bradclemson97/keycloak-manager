@@ -12,6 +12,7 @@
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/UserController.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/UserControllerImpl.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/request/CreateUserRequest.java
+/Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/request/SyncPermissionsRequest.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/response/CreateUserResponse.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/response/GetUserResponse.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/controller/response/LockoutStatusResponse.java
@@ -27,6 +28,7 @@
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/service/AdminServiceImpl.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/service/CredentialService.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/service/CredentialServiceImpl.java
+/Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/service/RealmSetupService.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/service/UsersService.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/service/UsersServiceImpl.java
 /Users/bradley.clemson/IdeaProjects/keycloak-manager/src/main/java/com/example/keycloakmanager/service/validation/password/PasswordValidation.java

@@ -7,6 +7,9 @@ import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
 import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * A service for performing user actions.
  */
@@ -49,4 +52,6 @@ public interface UsersService {
     LockoutStatusResponse getLockoutStatus(String email);
 
     void unlockInKeycloak(String email);
+
+    void syncUserPermissions(UUID systemUserId, List<String> capabilities, List<String> systemRoles);
 }

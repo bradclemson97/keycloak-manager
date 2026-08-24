@@ -1,12 +1,14 @@
 package com.example.keycloakmanager.controller;
 
 import com.example.keycloakmanager.controller.request.CreateUserRequest;
+import com.example.keycloakmanager.controller.request.SyncPermissionsRequest;
 import com.example.keycloakmanager.controller.response.CreateUserResponse;
 import com.example.keycloakmanager.controller.response.GetUserResponse;
 import com.example.keycloakmanager.controller.response.LockoutStatusResponse;
 import com.example.keycloakmanager.controller.response.ResetPasswordResponse;
 import com.example.keycloakmanager.exception.UserCreationException;
 import com.example.keycloakmanager.service.UsersService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,5 +67,12 @@ public class UserControllerImpl implements UserController {
         log.info("Handling unlock request for '{}'", email);
         usersService.unlockInKeycloak(email);
         log.info("Handled unlock request for '{}'", email);
+    }
+
+    @Override
+    public void syncUserPermissions(UUID systemUserId, SyncPermissionsRequest request) {
+        log.info("Handling sync permissions request for systemUserId '{}'", systemUserId);
+        usersService.syncUserPermissions(systemUserId, request.getCapabilities(), request.getSystemRoles());
+        log.info("Handled sync permissions request for systemUserId '{}'", systemUserId);
     }
 }
