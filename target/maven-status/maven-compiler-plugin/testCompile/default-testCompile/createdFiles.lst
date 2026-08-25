@@ -1,4 +1,5 @@
 com/example/keycloakmanager/service/AdminServiceImplTest.class
+com/example/keycloakmanager/controller/UserControllerImplTest.class
 com/example/keycloakmanager/service/validation/password/UserPasswordValidationTest.class
 com/example/keycloakmanager/service/UsersServiceImplTest.class
 com/example/keycloakmanager/model/WordsTest.class

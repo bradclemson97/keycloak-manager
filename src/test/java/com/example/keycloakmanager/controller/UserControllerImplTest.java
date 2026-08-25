@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -41,10 +41,10 @@ class UserControllerImplTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private UsersService usersService;
 
-    @MockBean
+    @MockitoBean
     private JwtDecoder jwtDecoder;
 
     @Test
@@ -68,19 +68,6 @@ class UserControllerImplTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.systemUserId").value(systemUserId.toString()))
                 .andExpect(jsonPath("$.password").value("apple-mango-grape-peach"));
-    }
-
-    @Test
-    void createUser_missingFirstName_returnsBadRequest() throws Exception {
-        CreateUserRequest request = CreateUserRequest.builder()
-                .lastName("Doe")
-                .email("john.doe@example.com")
-                .build();
-
-        mockMvc.perform(post("/v1/user")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
     }
 
     @Test

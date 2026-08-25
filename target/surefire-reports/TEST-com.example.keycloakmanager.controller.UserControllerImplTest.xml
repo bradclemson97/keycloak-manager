@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.keycloakmanager.model.WordsTest" time="0.035" tests="5" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.example.keycloakmanager.controller.UserControllerImplTest" time="1.302" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -61,12 +61,59 @@
     <property name="java.class.version" value="61.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[keycloak-manager] "/>
   </properties>
-  <testcase name="getRandomWordOverLength_returnsNull_whenNoWordsQualify" classname="com.example.keycloakmanager.model.WordsTest" time="0.029">
-    <system-out><![CDATA[2026-08-25T15:52:11.128+01:00  WARN 2345 --- [keycloak-manager] [           main] c.example.keycloakmanager.model.Words    : No valid words found that are 100 characters or longer
+  <testcase name="resetPassword_notFound_returns404" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.06">
+    <system-out><![CDATA[15:52:09.857 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.example.keycloakmanager.controller.UserControllerImplTest]: UserControllerImplTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:52:09.922 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.example.keycloakmanager.KeycloakManagerApplication for test class com.example.keycloakmanager.controller.UserControllerImplTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-08-25T15:52:10.125+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImplTest  : Starting UserControllerImplTest using Java 17.0.20.1 with PID 2345 (started by bradley.clemson in /Users/bradley.clemson/IdeaProjects/keycloak-manager)
+2026-08-25T15:52:10.125+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImplTest  : No active profile set, falling back to 1 default profile: "default"
+2026-08-25T15:52:10.811+01:00  INFO 2345 --- [keycloak-manager] [           main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-08-25T15:52:10.958+01:00  INFO 2345 --- [keycloak-manager] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-08-25T15:52:10.958+01:00  INFO 2345 --- [keycloak-manager] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-08-25T15:52:10.959+01:00  INFO 2345 --- [keycloak-manager] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-08-25T15:52:10.971+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImplTest  : Started UserControllerImplTest in 0.977 seconds (process running for 1.457)
+2026-08-25T15:52:11.000+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling password reset request for 'missing@example.com'
 ]]></system-out>
   </testcase>
-  <testcase name="getRandomWordOverLength_returnsWordWithinRange_whenMultipleQualify" classname="com.example.keycloakmanager.model.WordsTest" time="0.0"/>
-  <testcase name="getRandomWordOverLength_includesAllWordsAboveMinLength" classname="com.example.keycloakmanager.model.WordsTest" time="0.004"/>
-  <testcase name="getRandomWordOverLength_returnsWord_atExactMinLength" classname="com.example.keycloakmanager.model.WordsTest" time="0.001"/>
-  <testcase name="getRandomWordOverLength_excludesWordsBelowMinLength" classname="com.example.keycloakmanager.model.WordsTest" time="0.0"/>
+  <testcase name="createUser_returnsCreatedWithPassword" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.043">
+    <system-out><![CDATA[2026-08-25T15:52:11.058+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling create request for user 'john.doe@example.com' with system user id '3688c734-011b-4896-a28b-62340decd4a9'
+2026-08-25T15:52:11.058+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handled create request for user 'john.doe@example.com' with system user id '3688c734-011b-4896-a28b-62340decd4a9'
+]]></system-out>
+  </testcase>
+  <testcase name="rollbackUser_notFound_returns404" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.011">
+    <system-out><![CDATA[2026-08-25T15:52:11.081+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling create user rollback request for user 'missing@example.com'
+]]></system-out>
+  </testcase>
+  <testcase name="createUser_serviceThrowsConflict_returnsConflict" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.005">
+    <system-out><![CDATA[2026-08-25T15:52:11.093+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling create request for user 'john.doe@example.com' with system user id '521ef290-1324-4493-9c94-729ab9d42fc7'
+]]></system-out>
+  </testcase>
+  <testcase name="resetPassword_returnsNewPassword" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.005">
+    <system-out><![CDATA[2026-08-25T15:52:11.099+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling password reset request for 'jane@example.com'
+2026-08-25T15:52:11.099+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handled password reset request for 'jane@example.com'
+]]></system-out>
+  </testcase>
+  <testcase name="rollbackUser_returnsOk" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.003">
+    <system-out><![CDATA[2026-08-25T15:52:11.103+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling create user rollback request for user 'john.doe@example.com'
+2026-08-25T15:52:11.103+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handled create user rollback request for user 'john.doe@example.com'
+]]></system-out>
+  </testcase>
+  <testcase name="getUser_notFound_returns404" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.003">
+    <system-out><![CDATA[2026-08-25T15:52:11.107+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling get user request for 'missing@example.com'
+]]></system-out>
+  </testcase>
+  <testcase name="getUser_returnsUserDetails" classname="com.example.keycloakmanager.controller.UserControllerImplTest" time="0.005">
+    <system-out><![CDATA[2026-08-25T15:52:11.112+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handling get user request for 'jane@example.com'
+2026-08-25T15:52:11.112+01:00  INFO 2345 --- [keycloak-manager] [           main] c.e.k.controller.UserControllerImpl      : Handled get user request for 'jane@example.com'
+]]></system-out>
+  </testcase>
 </testsuite>
