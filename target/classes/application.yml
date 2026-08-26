@@ -24,7 +24,13 @@ keycloak:
   # The ID of the client that represents your application in Keycloak
   clientId: ${KEYCLOAK_MANAGER_CLIENT:system-manager-service}
   # The client secret that allows your application to authenticate with Keycloak
-  clientSecret: ${KEYCLOAK_MANAGER_SECRET:IrxWcv5tpOBk3og8LO3eC4kj4ATGlIr0}
+  clientSecret: ${KEYCLOAK_MANAGER_SECRET:gFdj5TMLFvvscCs5tVoFH6HrhjWrOAZE}
+
+springdoc:
+  swagger-ui:
+    path: /v1/docs
+  api-docs:
+    path: /v1/api-docs
 
 clients:
   clients:
