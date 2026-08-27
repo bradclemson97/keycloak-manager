@@ -25,7 +25,7 @@ The service runs on port **8210**.
 
 ## Security
 
-All endpoints except `/actuator/health`, `/v3/api-docs/**`, and `/swagger-ui/**` require a valid Bearer JWT issued by the configured Keycloak realm (`KEYCLOAK_ISSUER_URI`).
+All endpoints except `/actuator/health`, `/v1/docs`, `/v1/docs/**`, `/v1/api-docs`, `/v1/api-docs/**`, and `/swagger-ui/**` require a valid Bearer JWT issued by the configured Keycloak realm (`KEYCLOAK_ISSUER_URI`).
 
 The service does not use the `security-library`. It has its own `SecurityFilterChain` with `oauth2ResourceServer(jwt)` configured directly, so the incoming user JWT is validated by Spring Security before any Keycloak admin operations are performed.
 
@@ -61,11 +61,22 @@ Or with environment overrides:
 KEYCLOAK_AUTH_URL=http://keycloak:9000 KEYCLOAK_REALM=myrealm mvn spring-boot:run
 ```
 
+## Startup Behaviour
+
+On startup, `RealmSetupService` runs a `@PostConstruct` hook that creates two `oidc-usermodel-attribute-mapper` protocol mappers in the configured Keycloak realm (idempotent — skipped if they already exist):
+
+| Mapper name | User attribute | Claim in access token | Multivalued |
+|---|---|---|---|
+| `capabilities` | `capabilities` | `capabilities` | yes |
+| `systemRoles` | `systemRoles` | `systemRoles` | yes |
+
+These mappers allow Keycloak to embed the user's assigned permissions directly into signed JWTs. The `access-control-manager` writes to these Keycloak user attributes whenever a user's role assignment changes (via `PUT /v1/user/{systemUserId}/permissions`), so consuming services can read permissions from the token without a per-request ACM call.
+
 ## API
 
 Base path: `/v1/user`
 
-Interactive API documentation is available via Swagger UI at `http://localhost:8210/swagger-ui.html` when the service is running.
+Interactive API documentation is available via Swagger UI at `http://localhost:8210/v1/docs` when the service is running.
 
 ### POST `/v1/user`
 
@@ -133,6 +144,23 @@ Generates a new passphrase and sets it on the user's Keycloak account.
 Deletes a user from Keycloak. Intended for use as a Saga compensation step to roll back a prior `POST /v1/user` call.
 
 **Response `200 OK`** (empty body)
+
+---
+
+### PUT `/v1/user/{systemUserId}/permissions`
+
+Writes `capabilities` and `systemRoles` as Keycloak user attributes for the given user, so the next issued JWT will carry those claims. Called automatically by the Access Control Manager after every role change — not intended for direct use.
+
+**Request body:**
+
+```json
+{
+  "capabilities": ["Create users", "Search and View users"],
+  "systemRoles": ["User Administration"]
+}
+```
+
+**Response `204 No Content`** (empty body)
 
 ---
 
